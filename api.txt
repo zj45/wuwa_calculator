@@ -1,0 +1,6 @@
+角色列表：https://api-v2.encore.moe/api/zh-Hans/character
+角色详情：https://api-v2.encore.moe/api/zh-Hans/character/{id}
+{id}为角色id
+武器列表：https://api-v2.encore.moe/api/zh-Hans/weapon
+武器详情：https://api-v2.encore.moe/api/zh-Hans/weapon/{id}
+{id}为武器id

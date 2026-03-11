@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鸣潮伤害计算器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>鸣潮伤害计算器</h1>
+        
+        <div class="main-grid">
+            <div class="panel self-panel">
+                <h2>自身面板</h2>
+                <div class="input-group">
+                    <label>选择角色</label>
+                    <select id="characterSelect" onchange="onCharacterSelect()">
+                        <option value="">-- 请选择角色 --</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>角色基础攻击力</label>
+                    <input type="number" id="charBaseAtk" value="800">
+                </div>
+                <div class="input-group">
+                    <label>自带暴击率 (%)</label>
+                    <input type="number" id="selfCritRate" value="5" readonly style="background: rgba(255,255,255,0.05);">
+                </div>
+                <div class="input-group">
+                    <label>自带暴击伤害 (%)</label>
+                    <input type="number" id="selfCritDmg" value="150" readonly style="background: rgba(255,255,255,0.05);">
+                </div>
+                <div class="input-group">
+                    <label>角色等级</label>
+                    <input type="number" id="charLevel" value="90">
+                </div>
+            </div>
+
+            <div class="panel weapon-detail-panel">
+                <h2>武器面板</h2>
+                <div class="input-group">
+                    <label>选择武器</label>
+                    <select id="weaponSelect" onchange="onWeaponSelect()">
+                        <option value="">-- 请选择武器 --</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>武器基础攻击力</label>
+                    <input type="number" id="weaponBaseAtk" value="600">
+                </div>
+                <div class="input-group">
+                    <label>武器副词条</label>
+                    <input type="text" id="weaponSubStat" value="" readonly style="background: rgba(255,255,255,0.05);">
+                </div>
+            </div>
+
+            <div class="panel echo-panel">
+                <h2>声骸面板</h2>
+                <div class="input-group">
+                    <label>攻击力百分比加成 (%)</label>
+                    <input type="number" id="echoAtkPercent" value="86">
+                </div>
+                <div class="input-group">
+                    <label>攻击力固定数值加成</label>
+                    <input type="number" id="echoAtkFlat" value="0">
+                </div>
+                <div class="input-group">
+                    <label>属性伤害加成 (%)</label>
+                    <input type="number" id="echoElemDmg" value="60">
+                </div>
+                <div class="input-group">
+                    <label>普攻伤害加成 (%)</label>
+                    <input type="number" id="echoNormalDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>重击伤害加成 (%)</label>
+                    <input type="number" id="echoHeavyDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>共鸣技能伤害加成 (%)</label>
+                    <input type="number" id="echoResonanceDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>共鸣解放伤害加成 (%)</label>
+                    <input type="number" id="echoLiberationDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>暴击率 (%)</label>
+                    <input type="number" id="echoCritRate" value="37.5">
+                </div>
+                <div class="input-group">
+                    <label>暴击伤害 (%)</label>
+                    <input type="number" id="echoCritDmg" value="92">
+                </div>
+                <div class="input-group">
+                    <label>Cost4主属性</label>
+                    <select id="cost4MainStat" onchange="updateCost4MainStat()">
+                        <option value="">-- 无 --</option>
+                        <option value="critRate">暴击率 +22%</option>
+                        <option value="critDmg">暴击伤害 +44%</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="panel summary-panel">
+                <h2>角色面板汇总</h2>
+                <div class="summary-item">
+                    <span>最终攻击力：</span>
+                    <strong id="summaryFinalAtk">0</strong>
+                </div>
+                <div class="summary-item">
+                    <span>总暴击率：</span>
+                    <strong id="summaryCritRate">0%</strong>
+                </div>
+                <div class="summary-item">
+                    <span>总暴击伤害：</span>
+                    <strong id="summaryCritDmg">0%</strong>
+                </div>
+                <div class="summary-item">
+                    <span>属性伤害加成：</span>
+                    <strong id="summaryElemDmg">0%</strong>
+                </div>
+            </div>
+
+            <div class="panel enemy-panel">
+                <h2>敌人面板</h2>
+                <div class="input-group">
+                    <label>敌人等级</label>
+                    <input type="number" id="enemyLevel" value="100">
+                </div>
+                <div class="input-group">
+                    <label>属性抗性 (%)</label>
+                    <input type="number" id="elemResist" value="10">
+                </div>
+            </div>
+
+            <div class="panel buff-panel">
+                <h2>场地Buff</h2>
+                <div class="input-group">
+                    <label>倍率提升 (%)</label>
+                    <input type="number" id="mulBoost" value="0">
+                </div>
+                <div class="input-group">
+                    <label>倍率加深 (%)</label>
+                    <input type="number" id="mulDeepen" value="0">
+                </div>
+                <div class="input-group">
+                    <label>攻击力百分比加成 (%)</label>
+                    <input type="number" id="buffAtkPercent" value="0">
+                </div>
+                <div class="input-group">
+                    <label>属性伤害加成 (%)</label>
+                    <input type="number" id="buffElemDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>普通伤害加成 (%)</label>
+                    <input type="number" id="buffNormalDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>重击伤害加成 (%)</label>
+                    <input type="number" id="buffHeavyDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>共鸣技能伤害加成 (%)</label>
+                    <input type="number" id="buffResonanceDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>共鸣解放伤害加成 (%)</label>
+                    <input type="number" id="buffLiberationDmg" value="0">
+                </div>
+                <div class="input-group">
+                    <label>暴击率加成 (%)</label>
+                    <input type="number" id="buffCritRate" value="0">
+                </div>
+                <div class="input-group">
+                    <label>暴击伤害加成 (%)</label>
+                    <input type="number" id="buffCritDmg" value="0">
+                </div>
+                <div class="input-group checkbox-group">
+                    <label>守岸人</label>
+                    <input type="checkbox" id="shouAnRen" onchange="updateSummary()">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel skills-panel">
+            <h2>技能管理</h2>
+            <div class="skill-form">
+                <div class="input-group">
+                    <label>技能名称</label>
+                    <input type="text" id="skillName" placeholder="例如：普通攻击">
+                </div>
+                <div class="input-group">
+                    <label>技能倍率 (%)</label>
+                    <input type="number" id="skillMultiplier" value="100">
+                </div>
+                <div class="input-group">
+                    <label>伤害类型</label>
+                    <select id="skillType">
+                        <option value="normal">普攻</option>
+                        <option value="heavy">重击</option>
+                        <option value="resonance">共鸣技能</option>
+                        <option value="liberation">共鸣解放</option>
+                    </select>
+                </div>
+                <div class="input-group checkbox-group">
+                    <label>是否为声骸技能</label>
+                    <input type="checkbox" id="isEchoSkill">
+                </div>
+                <button class="btn btn-add" onclick="addSkill()">添加技能</button>
+            </div>
+            <div class="skills-list" id="skillsList"></div>
+        </div>
+
+        <div class="panel rotation-panel">
+            <h2>技能搭配</h2>
+            <div class="rotation-builder" id="rotationBuilder"></div>
+            <button class="btn btn-calculate" onclick="calculateDamage()">计算总伤害</button>
+        </div>
+
+        <div class="panel result-panel" id="resultPanel" style="display: none;">
+            <h2>计算结果</h2>
+            <div class="final-attack">
+                <strong>最终攻击力：</strong><span id="finalAttackDisplay"></span>
+            </div>
+            <div class="total-damage">
+                <strong>总伤害：</strong><span id="totalDamageDisplay"></span>
+            </div>
+            <div class="skill-breakdown" id="skillBreakdown"></div>
+            
+            <button class="btn btn-add" onclick="toggleCalculationDetail()" style="margin-top: 15px;">
+                <span id="detailToggleText">展开计算过程</span>
+            </button>
+            <div class="calculation-detail" id="calculationDetail" style="display: none; margin-top: 15px;">
+                <div id="calculationDetailContent"></div>
+            </div>
+            
+            <button class="btn btn-add" onclick="exportToCSV()" style="margin-top: 20px;">导出为CSV文件</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
